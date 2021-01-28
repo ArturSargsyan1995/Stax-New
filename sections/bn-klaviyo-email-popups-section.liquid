@@ -1,0 +1,96 @@
+
+<div id="emailKlaviyoPopup" class="klaviyoModal">
+
+  <div class="klaviyoModal-content">
+    <!-- <div class="klaviyoModal-header">
+     
+    </div> -->
+    <div class="klaviyoModal-body">
+        <div class="bn_vip_list_notificatin_container klaviyoModal-header">
+            <h1 class="bn_vip_list_notificatin_container_text">{{section.settings.notification_title }}</h1>
+            <span class="klaviyoModal_close">&times;</span>
+          </div>
+            <div class="rte rte--indented-images">
+                 <div class="vip_list_main"  style="background-image:url('{{ section.settings.backgroundImage | img_url: '800x'}}')">
+               <div class="bn-custom-vip-list">
+             <h1 >{{section.settings.title }}</h1>
+                 <h2>{{section.settings.signup_title }}</h2>
+             <h3>{{section.settings.signup_description }}</h3>
+             <div class="vip_form_content bn_klaviyo_desktop_section   klaviyo-form-{{ section.settings.klaviyo_first_form }}"></div>
+             <div class="vip_form_content bn_klaviyo_mobile_section   klaviyo-form-{{ section.settings.klaviyo_second_form }}"></div> 
+             <p class="vip_order_txt">{{ section.settings.footer_title }}</p>
+             </div>
+          </div>
+            </div>
+        
+    </div>
+    <!-- <div class="klaviyoModal-footer">
+      <h3></h3>
+    </div> -->
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Klaviyo Popup",
+  "settings": [
+    {
+      "id": "klaviyo_first_form",
+      "type": "text",
+      "label": "Desktop",
+      "default": "Klaviyo Desktop Class name"
+    },
+    {
+        "id": "klaviyo_second_form",
+        "type": "text",
+        "label": "Mobile",
+        "default": "Klaviyo Mobile Class name"
+      },
+      {
+        "type": "text",
+        "id": "notification_title",
+        "label": "Heading",
+        "default": "Your headline"
+      },
+      {
+          "type": "image_picker",
+          "id": "backgroundImage",
+          "label": "Background image "
+          },
+      {
+          "type": "text",
+          "id": "title",
+          "label": "Text",
+          "default": "Your Text"
+        },
+        {
+          "type": "text",
+          "id": "signup_title",
+          "label": "Text",
+          "default": "Your Text"
+        },
+        {
+          "type": "text",
+          "id": "signup_description",
+          "label": "Text",
+          "default": "Your Text"
+        },
+        {
+          "type": "text",
+          "id": "footer_title",
+          "label": "Text",
+          "default": "Your Text"
+        }
+        
+    
+   
+  ],
+  "presets": [
+    {
+      "name": "Klaviyo Popups",
+      "category": "Email"
+    }
+  ]
+}
+{% endschema %}
