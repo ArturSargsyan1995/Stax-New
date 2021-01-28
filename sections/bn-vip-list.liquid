@@ -1,0 +1,65 @@
+<div class="bn_vip_list_notificatin_container">
+    <h1 class="bn_vip_list_notificatin_container_text">{{section.settings.notification_title }}</h1>
+  </div>
+    <div class="rte rte--indented-images">
+         <div class="vip_list_main"  style="background-image:url({{ section.settings.backgroundImage | img_url: '800x'}})">
+       <div class="bn-custom-vip-list">
+     <h1 >{{section.settings.title }}</h1>
+         <h2>{{section.settings.signup_title }}</h2>
+     <h3>{{section.settings.signup_description }}</h3>
+    <div class="vip_form_content klaviyo-form-PGsuNd"></div>
+     <p class="vip_order_txt">{{section.settings.footer_title }}</p>
+     </div>
+  </div>
+    </div>
+    {% schema %}
+{
+  "name": "Klaviyo Email form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "notification_title",
+      "label": "Heading",
+      "default": "Your headline"
+    },
+    {
+        "type": "image_picker",
+        "id": "backgroundImage",
+        "label": "Background image "
+        },
+    {
+        "type": "text",
+        "id": "title",
+        "label": "Text",
+        "default": "Your Text"
+      },
+      {
+        "type": "text",
+        "id": "signup_title",
+        "label": "Text",
+        "default": "Your Text"
+      },
+      {
+        "type": "text",
+        "id": "signup_description",
+        "label": "Text",
+        "default": "Your Text"
+      },
+      {
+        "type": "text",
+        "id": "footer_title",
+        "label": "Text",
+        "default": "Your Text"
+      }
+  
+  
+  ],
+
+  "presets": [{
+    "name": "Klaviyo Email form",
+    "category": "Image"
+  }]
+}
+{% endschema %}
+
+
