@@ -1,0 +1,263 @@
+
+{% paginate collection.products by 24 %}
+
+
+{% comment %} Starting github codding {% endcomment %}
+{% if section.settings.collection_sort_enable %}
+  <div class="action-bar-secondary bn-container">
+      <div class="action-bar-secondary__dropdown bn-sort-by bn-filter">
+        <label for="SortBy">{{ 'collections.sorting.title' | t }}:</label>
+        <div class="bn-sort-by-container">
+            <select name="SortBy" id="SortBy" data-value="{{ collection.sort_by | default: collection.default_sort_by | escape }}">
+              <option value="manual">{{ 'collections.sorting.featured' | t }}</option>
+              <option value="best-selling">{{ 'collections.sorting.best_selling' | t }}</option>
+              <option value="title-ascending">{{ 'collections.sorting.az' | t }}</option>
+              <option value="title-descending">{{ 'collections.sorting.za' | t }}</option>
+              <option value="price-ascending">{{ 'collections.sorting.price_ascending' | t }}</option>
+              <option value="price-descending">{{ 'collections.sorting.price_descending' | t }}</option>
+              <option value="created-descending">{{ 'collections.sorting.date_descending' | t }}</option>
+              <option value="created-ascending">{{ 'collections.sorting.date_ascending' | t }}</option>
+            </select>
+            <button type="button" class="bn-select-arrow"><i class="fas fa-chevron-down"></i></button>
+        </div>
+      </div>
+    <div class="bn-on-sale-new-in bn-filter">
+      <label class="bn-on-sale bn-filter-checkbox"><input value="on-sale" class="bn-filter-input" type="checkbox">On sale</label> 
+      <label class="bn-new-in bn-filter-checkbox"><input value="new-in" class="bn-filter-input" type="checkbox">New in</label>
+    </div>
+    <div class="bn-filter-price-range bn-filter">
+      <label>Price</label>
+      <div class="range-wrap">
+      <div class="range-value" id="price-minV"></div>
+      <input class="bn-filter-input" type="range" id="price-min" min="10" max="1000" value="90" step="10" >
+      </div>
+      <div class="range-wrap">
+      <div class="range-value" id="price-maxV"></div>
+      <input class="bn-filter-input" type="range" id="price-max" min="10" max="1000" value="800" step="10">
+      </div>
+    </div>
+    <div class="bn-filter-gender bn-filter has--dropdown">
+      <p class="bn-filter-name">Gender<span class="bn-arrow-down"><i class="fas fa-chevron-down"></i></span></p>
+      <div class="bn-filter-content">
+      <label class="bn-filter-women bn-filter-checkbox"><input value="women" class="bn-filter-input" type="checkbox">Women</label>
+      <label class="bn-filter-men bn-filter-checkbox"><input value="men" class="bn-filter-input" type="checkbox">Men</label> 
+      <label class="bn-filter-unisex bn-filter-checkbox"><input value="unisex" class="bn-filter-input" type="checkbox">Unisex</label>
+      </div>
+    </div>
+    <div class="bn-filter-color bn-filter has--dropdown">
+      <p class="bn-filter-name">Color<span class="bn-arrow-down"><i class="fas fa-chevron-down"></i></span></p>
+      <div class="bn-filter-content">
+      <label class="bn-filter-red bn-filter-checkbox"><input value="red" class="bn-filter-input" type="checkbox">Red</label>
+      <label class="bn-filter-black bn-filter-checkbox"><input value="black" class="bn-filter-input" type="checkbox">Black</label> 
+      <label class="bn-filter-blue bn-filter-checkbox"><input value="blue" class="bn-filter-input" type="checkbox">Blue</label>
+      </div>
+    </div>
+    <div class="bn-filter-size bn-filter has--dropdown">
+      <p class="bn-filter-name">Size <span class="bn-arrow-down"><i class="fas fa-chevron-down"></i></span></p>
+      <div class="bn-filter-content">
+        <label class="bn-filter-s bn-filter-checkbox"><input value="s" class="bn-filter-input" type="checkbox">S</label>
+        <label class="bn-filter-m bn-filter-checkbox"><input value="m" class="bn-filter-input" type="checkbox">M</label> 
+        <label class="bn-filter-l bn-filter-checkbox"><input value="l" class="bn-filter-input" type="checkbox">L</label>
+      </div>
+    </div>
+    <div class="bn-filter-collection bn-filter has--dropdown">
+      <p class="bn-filter-name">Collection<span class="bn-arrow-down"><i class="fas fa-chevron-down"></i></span></p>
+      <div class="bn-filter-content">
+      <div class="bn-filter-search-container">
+      <input type="text" placeholder="Fast search">
+      <button type="button" class="filter-search-button">
+        <span class="icon icon-search" aria-hidden="true"></span>
+        <span class="icon__fallback-text">Search</span>
+      </button>
+      </div>
+      
+      <div class="filter-collection-items">
+        {% assign without_collection = section.settings.without_collection | split: ','  %}
+        {% for collection in collections %}
+        
+        <label class="bn-filter-col-{{forloop.index}} bn-filter-checkbox"><input value="{{collection.title | handleize }}" class="bn-filter-input" type="checkbox">{{collection.title}}</label>
+        {% capture collection_id %}
+              {{collection.id}}
+          {% endcapture %}
+          
+          
+        {% if collection_id contains without_collection %}
+            
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+    </div>
+  </div>
+{% endif %}
+
+{% comment %}
+  Set grid item widths based on settings
+{% endcomment %}
+
+{% include 'product-grid-width' with product_image_type: section.settings.product_image_type, product_image_size: section.settings.product_image_size %}
+
+<div class="bn-container {% if section.settings.collection_sort_enable %}bn-collection-column {% endif %}colection-column" data-section-id="{{ section.id }}" data-section-type="collection-template-section" data-sort-enabled="{{ section.settings.collection_sort_enable }}" data-tags-enabled="{{ section.settings.collection_tags_enable }}">
+  {% for product in collection.products %}
+    {% assign price = product.price | money_without_trailing_zeros %}
+    {% include 'product-new-look-grid-item-bn' with product_image_spacing: section.settings.product_image_spacing, vendor_enable: section.settings.vendor_enable %}
+  {% else %} 
+    {% comment %}
+      Add default products to help with onboarding for collections/all only.
+
+      The onboarding styles and products are only loaded if the
+      store has no products.
+    {% endcomment %}
+    {% if collection.handle == 'all' %}
+      <div class="grid__item">
+        <div class="helper-section">
+          <div class="grid grid--uniform grid--no-gutters helper-content">
+            {% assign collection_onboarding_index = 1 %}
+            {% for i in (1..8) %}
+              {% case i %}
+                {% when 7 %}
+                  {% assign collection_onboarding_index = 1 %}
+                {% when 8 %}
+                  {% assign collection_onboarding_index = 2 %}
+              {% endcase %}
+              <div class="product-item grid__item {{ grid_item_width }} ">
+                <a class="product-item__link" href="/admin/products">
+                  {{ 'product-' | append: collection_onboarding_index | placeholder_svg_tag: 'product-item__image icon icon--placeholder' }}
+                  <span class="product-item__meta">
+                    <span class="product-item__meta__inner">
+                      <p class="product-item__title">{{ 'homepage.onboarding.product_title' | t }}</p>
+                      <p>$19.99</p>
+                    </span>
+                  </span>
+                </a>
+              </div>
+              {% assign collection_onboarding_index = collection_onboarding_index | plus: 1 %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% else %}
+      {% comment %}
+        If collection exists but is empty, display message
+      {% endcomment %}
+      <div class="grid__item text-center">
+        <p>{{ 'collections.general.no_matches' | t }}</p>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+{% if paginate.pages > 1 %}
+  {% if section.settings.pagination_type == 'numbers' %}
+    {% include 'pagination' %}
+  {% else %}
+    <div class="pagination--infinite">
+      <a href="{{ paginate.next.url }}" class="btn js-show-more">{{ 'collections.general.show_more' | t }}</a>
+    </div>
+  {% endif %}
+{% endif %}
+
+{% endpaginate %}
+<div class="container collection-bottom bn-container" >
+  <h1>{{collection.title}}</h1>
+  <p>{{collection.description}}</p>
+  {% if collection.metafields.col-video.video != blank %}
+  <video controls preload="none" muted>
+    <source src="{{ collection.metafields.col-video.video }}" type="video/mp4" autostart="false">
+  </video>
+  {% endif %}
+</div>
+{% schema %}
+  {
+    "name": "Collection",
+    "class": "collection-template-section",
+    "settings": [{
+        "type": "header",
+        "content": "Appearance"
+      },
+      {
+        "type": "select",
+        "id": "product_image_type",
+        "label": "Image style",
+        "options": [
+          {
+            "value": "portrait",
+            "label": "Tall/square"
+          },
+          {
+            "value": "landscape",
+            "label": "Wide"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "product_image_size",
+        "label": "Image size",
+        "default": "medium",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          },
+          {
+            "value": "xlarge",
+            "label": "Extra large"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "product_image_spacing",
+        "label": "Add spacing between images"
+      },
+      {
+        "type": "checkbox",
+        "id": "vendor_enable",
+        "label": "Show product vendor"
+      },
+      {
+        "type": "header",
+        "content": "Sorting & filtering"
+      },
+      {
+        "type": "checkbox",
+        "id": "collection_sort_enable",
+        "label": "Show sorting options"
+      },
+      {
+        "type":"html",
+        "id":"without_collection",
+        "label":"Collections Id",
+        "info":"Not visible collections. Us separator ',' "
+      },
+      {
+        "type": "header",
+        "content": "Pagination"
+      },
+      {
+        "type": "select",
+        "id": "pagination_type",
+        "label": "Pagination Type",
+        "default": "numbers",
+        "options": [
+          {
+            "value": "numbers",
+            "label": "Numbered pages"
+          },
+          {
+            "value": "show_more",
+            "label": "\"Load More\" button"
+          }
+        ]
+      }]
+  }
+{% endschema %}
